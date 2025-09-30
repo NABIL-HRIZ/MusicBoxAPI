@@ -1456,6 +1456,128 @@
                     }
                 ]
             }
+        },
+        "/chansons/search": {
+            "get": {
+                "tags": [
+                    "Chansons"
+                ],
+                "summary": "Search chansons by title or artist name",
+                "description": "Search for songs either by their title or by the artist's name. Returns a list of matching songs with album and artist info.",
+                "operationId": "64b6768bdbeb43451dc2c9de89622f5e",
+                "parameters": [
+                    {
+                        "name": "titre",
+                        "in": "query",
+                        "description": "Song title or artist name to search for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Ma Chanson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of matching chansons",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 35
+                                            },
+                                            "titre": {
+                                                "type": "string",
+                                                "example": "Ma Chanson"
+                                            },
+                                            "duree": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 3.5
+                                            },
+                                            "album_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "album": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titre": {
+                                                        "type": "string",
+                                                        "example": "Mon Premier Album"
+                                                    },
+                                                    "annee": {
+                                                        "type": "string",
+                                                        "example": "2024"
+                                                    },
+                                                    "artist_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "artist": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "John Doe"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Titre or artist name not provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Veuillez fournir un titre ou nom d'artiste"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {

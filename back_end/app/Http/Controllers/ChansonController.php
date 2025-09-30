@@ -74,7 +74,7 @@ class ChansonController extends Controller
     {
         $chanson = Chanson::with('album')->find($id);
         if (!$chanson) {
-            return response()->json(['message' => 'Chanson not found'], 404);
+            return response()->json(['message' => 'Chanson noot found'], 404);
         }
         return response()->json($chanson, 200);
     }
@@ -274,5 +274,98 @@ public function getChansonsByAlbum($id)
 
     return response()->json($album->chansons, 200);
 }
+
+
+
+// search for a chanson  via title or artist 
+
+
+/**
+ * @OA\Get(
+ *     path="/chansons/search",
+ *     tags={"Chansons"},
+ *     summary="Search chansons by title or artist name",
+ *     description="Search for songs either by their title or by the artist's name. Returns a list of matching songs with album and artist info.",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="titre",
+ *         in="query",
+ *         description="Song title or artist name to search for",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string",
+ *             example="Ma Chanson"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of matching chansons",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(
+ *                 @OA\Property(property="id", type="integer", example=35),
+ *                 @OA\Property(property="titre", type="string", example="Ma Chanson"),
+ *                 @OA\Property(property="duree", type="number", format="float", example=3.5),
+ *                 @OA\Property(property="album_id", type="integer", example=1),
+ *                 @OA\Property(property="created_at", type="string", format="date-time"),
+ *                 @OA\Property(property="updated_at", type="string", format="date-time"),
+ *                 @OA\Property(
+ *                     property="album",
+ *                     type="object",
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="titre", type="string", example="Mon Premier Album"),
+ *                     @OA\Property(property="annee", type="string", example="2024"),
+ *                     @OA\Property(property="artist_id", type="integer", example=1),
+ *                     @OA\Property(
+ *                         property="artist",
+ *                         type="object",
+ *                         @OA\Property(property="id", type="integer", example=1),
+ *                         @OA\Property(property="name", type="string", example="John Doe")
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Titre or artist name not provided",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Veuillez fournir un titre ou nom d'artiste")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthenticated",
+ *     )
+ * )
+ */
+public function search(Request $request)
+{
+    $query = trim($request->input('titre', ''));
+
+    if (empty($query)) {
+        return response()->json(['message' => 'Veuillez fournir un titre ou nom d\'artiste'], 400);
+    }
+
+    $chansons = Chanson::with('album.artist') 
+        ->where('titre', 'LIKE', "%{$query}%")
+        ->orWhereHas('album.artist', function($q) use ($query) { 
+            $q->where('name', 'LIKE', "%{$query}%");
+        })
+        ->get();
+
+    return response()->json($chansons);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 }

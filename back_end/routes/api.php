@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum'])->post('/logout',[AuthenticatedSessionControl
 
 
 
+
 // DevelopperController 
 
 Route::middleware(['auth:sanctum','role:admin'])->post('/artists', [AdminController::class,'store']);
@@ -63,11 +64,18 @@ Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}/albums', [A
 
 Route::middleware(['auth:sanctum','role:admin'])->group(function() {
     Route::get('/chansons', [ChansonController::class,'index']);
+   Route::get('/chansons/search', [ChansonController::class, 'search']);
     Route::get('/chansons/{id}', [ChansonController::class,'show']);
     Route::post('/chansons', [ChansonController::class,'store']);
     Route::put('/chansons/{id}', [ChansonController::class,'update']);
     Route::delete('/chansons/{id}', [ChansonController::class,'destroy']);
     Route::get('/albums/{id}/chansons', [ChansonController::class, 'getChansonsByAlbum']);
 });
+
+
+
+
+
+
 
 

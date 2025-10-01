@@ -45,7 +45,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 ## API & utilisation
 
 - Base URL API : http://127.0.0.1:8000/api
-- Swagger UI : http://127.0.0.1:8000/api/docs (généré avec L5-Swagger)
+- Swagger UI : http://127.0.0.1:8000/api/documentation (généré avec L5-Swagger)
 
 ## Endpoints utiles
 

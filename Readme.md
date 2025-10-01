@@ -51,6 +51,8 @@ php artisan serve --host=127.0.0.1 --port=8000
 
 # Authentification
 
+# Si l'utilisateur connecté !
+
 - POST /api/register → Inscription
 
 - POST /api/login → Connexion
@@ -100,6 +102,28 @@ php artisan serve --host=127.0.0.1 --port=8000
 - DELETE /api/chansons/{id} → Supprimer une chanson (admin)
 
 - GET /api/albums/{id}/chansons' \_> List des chansons aprés un album
+
+# Si l'utilisateur est juste un vésiteur
+
+- GET /api/public/artists → Liste paginée (filtres : genre, pays)
+
+- GET /api/public/artists/{id} → Détail artiste
+
+- GET /api/public/albums → Liste paginée (filtres : année, artiste)
+
+- GET /api/public/albums/{id} → Détail album
+
+- GET api/public/artists/{id}/albums -> List des artistes et ses albums
+
+- GET api/public/artists/{id}/albums-chanson -> List des artistes et ses albums et ses chansons
+
+- GET /api/public/chansons → Liste paginée (filtres : durée, album)
+
+- GET /api/public/chansons/search → Recherche par titre ou artiste
+
+- GET /api/public/chansons/{id} → Détail chanson
+
+- GET /api/public/albums/{id}/chansons' \_> List des chansons aprés un album
 
 ## Documentation Swagger
 

@@ -75,6 +75,24 @@ Route::middleware(['auth:sanctum','role:admin'])->group(function() {
 
 
 
+// si utilisateur pas connecté just vésiteur 
+
+Route::get('/public/artists', [AdminController::class,'getArtists']);
+Route::get('/public/artists/{id}', [AdminController::class,'getArtistDetail']);
+
+Route::get('/public/albums', [AlbumController::class,'index']);
+Route::get('/public/albums/{id}', [AlbumController::class,'show']);
+
+
+Route::get('/public/artists/{id}/albums', [AdminController::class, 'getArtistsWithAlbums']);
+Route::get('/public/artists/{id}/albums-chansons', [AdminController::class, 'getArtistWithAlbumsAndChansons']);
+
+Route::get('/public/chansons', [ChansonController::class,'index']);
+Route::get('/public/chansons/search', [ChansonController::class, 'search']);
+Route::get('/public/chansons/{id}', [ChansonController::class,'show']);
+Route::get('/public/albums/{id}/chansons', [ChansonController::class, 'getChansonsByAlbum']);
+
+
 
 
 

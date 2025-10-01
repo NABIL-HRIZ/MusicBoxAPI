@@ -1,4 +1,4 @@
-###### README – MusicBoxAPI
+### README – MusicBoxAPI
 
 MusicBoxAPI est une API RESTful Laravel pour gérer artistes, albums et chansons. La documentation interactive est fournie par L5-Swagger (Swagger UI). Le projet utilise Laravel Breeeze pour l'authentification et Laratrust (roles & permissions) pour les autorisations.
 

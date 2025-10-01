@@ -9,35 +9,92 @@ use App\Models\Album;
 class ChansonController extends Controller
 {
     // --- Get all chansons ---
-    /**
-     * @OA\Get(
-     *     path="/chansons",
-     *     tags={"Chansons"},
-     *     summary="Get all chansons",
-     *     description="Retrieve a list of all songs",
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of songs",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="titre", type="string", example="Song 1"),
-     *                 @OA\Property(property="duree", type="number", format="float", example=3.5),
-     *                 @OA\Property(property="album_id", type="integer", example=1),
-     *                 @OA\Property(property="created_at", type="string", format="date-time"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time")
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function index()
-    {
-        $chansons = Chanson::with('album')->get();
-        return response()->json($chansons, 200);
+/**
+ * @OA\Get(
+ *     path="/chansons",
+ *     tags={"Chansons"},
+ *     summary="Get all chansons with pagination and filters",
+ *     description="Retrieve a paginated list of songs. Supports filters by title and artist name.",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="titre",
+ *         in="query",
+ *         description="Filter by song title",
+ *         required=false,
+ *         @OA\Schema(type="string", example="Song ")
+ *     ),
+ *     @OA\Parameter(
+ *         name="artist_name",
+ *         in="query",
+ *         description="Filter by artist name",
+ *         required=false,
+ *         @OA\Schema(type="string", example="DRAGANOV")
+ *     ),
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="query",
+ *         description="Page number",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\Parameter(
+ *         name="per_page",
+ *         in="query",
+ *         description="Number of items per page",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=5)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Paginated list of songs",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="current_page", type="integer", example=1),
+ *             @OA\Property(property="per_page", type="integer", example=5),
+ *             @OA\Property(property="last_page", type="integer", example=3),
+ *             @OA\Property(property="total", type="integer", example=15),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="titre", type="string", example="Song 1"),
+ *                     @OA\Property(property="duree", type="number", format="float", example=3.5),
+ *                     @OA\Property(property="album_id", type="integer", example=1),
+ *                     @OA\Property(property="album", type="object",
+ *                         @OA\Property(property="id", type="integer", example=1),
+ *                         @OA\Property(property="titre", type="string", example="Album 1"),
+ *                         @OA\Property(property="artist_id", type="integer", example=1)
+ *                     ),
+ *                     @OA\Property(property="created_at", type="string", format="date-time"),
+ *                     @OA\Property(property="updated_at", type="string", format="date-time")
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )
+ */
+public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 5);
+
+    $query = Chanson::with('album.artist');
+
+    if ($request->filled('titre')) {
+        $query->where('titre', 'like', '%' . $request->input('titre') . '%');
     }
+
+    if ($request->filled('artist_name')) {
+        $query->whereHas('album.artist', function($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->input('artist_name') . '%');
+        });
+    }
+
+    $chansons = $query->paginate($perPage);
+
+    return response()->json($chansons, 200);
+}
+
 
     // --- Get chanson by ID ---
     /**
@@ -294,7 +351,7 @@ public function getChansonsByAlbum($id)
  *         required=true,
  *         @OA\Schema(
  *             type="string",
- *             example="Ma Chanson"
+ *             example="song"
  *         )
  *     ),
  *     @OA\Response(

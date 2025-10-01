@@ -8,36 +8,102 @@ use App\Models\Artist;
 
 class AlbumController extends Controller
 {
-    // --- Get all albums ---
-    /**
-     * @OA\Get(
-     *     path="/albums",
-     *     tags={"Albums"},
-     *     summary="Get all albums",
-     *     description="Retrieve a list of all albums with their artist",
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of albums",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="titre", type="string", example="Album 1"),
-     *                 @OA\Property(property="annee", type="integer", example=2025),
-     *                 @OA\Property(property="artist_id", type="integer", example=1),
-     *                 @OA\Property(property="created_at", type="string", format="date-time"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time")
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function index()
-    {
-        $albums = Album::with('artist')->get();
-        return response()->json($albums, 200);
+   /**
+ * @OA\Get(
+ *     path="/albums",
+ *     tags={"Albums"},
+ *     summary="Get all albums with filters and pagination",
+ *     description="Retrieve a paginated list of albums. Supports filters by title, year, and artist name.",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="titre",
+ *         in="query",
+ *         description="Filter by album title",
+ *         required=false,
+ *         @OA\Schema(type="string", example="Album 1")
+ *     ),
+ *     @OA\Parameter(
+ *         name="annee",
+ *         in="query",
+ *         description="Filter by album year",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=2025)
+ *     ),
+ *     @OA\Parameter(
+ *         name="artist_name",
+ *         in="query",
+ *         description="Filter by artist name",
+ *         required=false,
+ *         @OA\Schema(type="string", example="SALGOAT")
+ *     ),
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="query",
+ *         description="Page number",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\Parameter(
+ *         name="per_page",
+ *         in="query",
+ *         description="Number of items per page",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=5)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Paginated list of albums",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="current_page", type="integer", example=1),
+ *             @OA\Property(property="per_page", type="integer", example=5),
+ *             @OA\Property(property="last_page", type="integer", example=3),
+ *             @OA\Property(property="total", type="integer", example=15),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="titre", type="string", example="Album 1"),
+ *                     @OA\Property(property="annee", type="integer", example=2025),
+ *                     @OA\Property(property="artist_id", type="integer", example=1),
+ *                     @OA\Property(property="artist", type="object",
+ *                         @OA\Property(property="id", type="integer", example=1),
+ *                         @OA\Property(property="name", type="string", example="Cheb Khaled")
+ *                     ),
+ *                     @OA\Property(property="created_at", type="string", format="date-time"),
+ *                     @OA\Property(property="updated_at", type="string", format="date-time")
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )
+ */
+public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 5);
+
+    $query = Album::with('artist');
+
+    if ($request->filled('titre')) {
+        $query->where('titre', 'like', '%' . $request->input('titre') . '%');
     }
+
+    if ($request->filled('annee')) {
+        $query->where('annee', $request->input('annee'));
+    }
+
+    if ($request->filled('artist_name')) {
+        $query->whereHas('artist', function($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->input('artist_name') . '%');
+        });
+    }
+
+    $albums = $query->paginate($perPage);
+
+    return response()->json($albums, 200);
+}
+
 
     // --- Get album details ---
     /**

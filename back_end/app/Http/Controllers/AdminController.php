@@ -33,14 +33,14 @@ class AdminController extends Controller
  *         in="query",
  *         description="Filter by genre",
  *         required=false,
- *         @OA\Schema(type="string", example="Raï")
+ *         @OA\Schema(type="string", example="Rap")
  *     ),
  *     @OA\Parameter(
  *         name="pays",
  *         in="query",
  *         description="Filter by country",
  *         required=false,
- *         @OA\Schema(type="string", example="Algérie")
+ *         @OA\Schema(type="string", example="MAROC")
  *     ),
  *     @OA\Response(
  *         response=200,

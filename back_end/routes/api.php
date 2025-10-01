@@ -40,57 +40,42 @@ Route::middleware(['auth:sanctum'])->post('/logout',[AuthenticatedSessionControl
 // DevelopperController 
 
 Route::middleware(['auth:sanctum','role:admin'])->post('/artists', [AdminController::class,'store']);
-Route::middleware(['auth:sanctum','role:admin'])->get('/show-artists', [AdminController::class,'getArtists']);
+Route::get('/show-artists', [AdminController::class,'getArtists']);
 Route::middleware(['auth:sanctum','role:admin'])->put('/artists/{id}', [AdminController::class,'updateArtist']);
 Route::middleware(['auth:sanctum','role:admin'])->delete('/artists/{id}', [AdminController::class,'deleteArtist']);
-Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}', [AdminController::class,'getArtistDetail']);
+Route::get('/artists/{id}', [AdminController::class,'getArtistDetail']);
 
 
 
 Route::middleware(['auth:sanctum','role:admin'])->group(function () {
-    Route::get('/albums', [AlbumController::class,'index']);
-    Route::get('/albums/{id}', [AlbumController::class,'show']);
+   
     Route::post('/albums', [AlbumController::class,'store']);
     Route::put('/albums/{id}', [AlbumController::class,'update']);
     Route::delete('/albums/{id}', [AlbumController::class,'destroy']);
 });
 
+ Route::get('/albums', [AlbumController::class,'index']);
+ Route::get('/albums/{id}', [AlbumController::class,'show']);
 
 
 
-Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}/albums', [AdminController::class, 'getArtistsWithAlbums']);
 
-Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}/albums-chansons', [AdminController::class, 'getArtistWithAlbumsAndChansons']);
+Route::get('/artists/{id}/albums', [AdminController::class, 'getArtistsWithAlbums']);
+
+Route::get('/artists/{id}/albums-chansons', [AdminController::class, 'getArtistWithAlbumsAndChansons']);
 
 
 Route::middleware(['auth:sanctum','role:admin'])->group(function() {
-    Route::get('/chansons', [ChansonController::class,'index']);
-   Route::get('/chansons/search', [ChansonController::class, 'search']);
-    Route::get('/chansons/{id}', [ChansonController::class,'show']);
     Route::post('/chansons', [ChansonController::class,'store']);
     Route::put('/chansons/{id}', [ChansonController::class,'update']);
     Route::delete('/chansons/{id}', [ChansonController::class,'destroy']);
-    Route::get('/albums/{id}/chansons', [ChansonController::class, 'getChansonsByAlbum']);
 });
+    Route::get('/chansons', [ChansonController::class,'index']);
+    Route::get('/chansons/search', [ChansonController::class, 'search']);
+    Route::get('/chansons/{id}', [ChansonController::class,'show']);
 
+    Route::get('/albums/{id}/chansons', [ChansonController::class, 'getChansonsByAlbum']);
 
-
-// si utilisateur pas connecté just vésiteur 
-
-Route::get('/public/artists', [AdminController::class,'getArtists']);
-Route::get('/public/artists/{id}', [AdminController::class,'getArtistDetail']);
-
-Route::get('/public/albums', [AlbumController::class,'index']);
-Route::get('/public/albums/{id}', [AlbumController::class,'show']);
-
-
-Route::get('/public/artists/{id}/albums', [AdminController::class, 'getArtistsWithAlbums']);
-Route::get('/public/artists/{id}/albums-chansons', [AdminController::class, 'getArtistWithAlbumsAndChansons']);
-
-Route::get('/public/chansons', [ChansonController::class,'index']);
-Route::get('/public/chansons/search', [ChansonController::class, 'search']);
-Route::get('/public/chansons/{id}', [ChansonController::class,'show']);
-Route::get('/public/albums/{id}/chansons', [ChansonController::class, 'getChansonsByAlbum']);
 
 
 

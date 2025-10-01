@@ -48,7 +48,7 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "example": "Raï"
+                            "example": "Rap"
                         }
                     },
                     {
@@ -58,7 +58,7 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "example": "Algérie"
+                            "example": "MAROC"
                         }
                     }
                 ],
@@ -660,45 +660,131 @@
                 "tags": [
                     "Albums"
                 ],
-                "summary": "Get all albums",
-                "description": "Retrieve a list of all albums with their artist",
+                "summary": "Get all albums with filters and pagination",
+                "description": "Retrieve a paginated list of albums. Supports filters by title, year, and artist name.",
                 "operationId": "1da83b13e3f02c4fee3c24e70098d603",
+                "parameters": [
+                    {
+                        "name": "titre",
+                        "in": "query",
+                        "description": "Filter by album title",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Album 1"
+                        }
+                    },
+                    {
+                        "name": "annee",
+                        "in": "query",
+                        "description": "Filter by album year",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    },
+                    {
+                        "name": "artist_name",
+                        "in": "query",
+                        "description": "Filter by artist name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "SALGOAT"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "List of albums",
+                        "description": "Paginated list of albums",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "titre": {
-                                                "type": "string",
-                                                "example": "Album 1"
-                                            },
-                                            "annee": {
-                                                "type": "integer",
-                                                "example": 2025
-                                            },
-                                            "artist_id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "created_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "updated_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            }
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
                                         },
-                                        "type": "object"
-                                    }
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 15
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titre": {
+                                                        "type": "string",
+                                                        "example": "Album 1"
+                                                    },
+                                                    "annee": {
+                                                        "type": "integer",
+                                                        "example": 2025
+                                                    },
+                                                    "artist_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "artist": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Cheb Khaled"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1144,46 +1230,126 @@
                 "tags": [
                     "Chansons"
                 ],
-                "summary": "Get all chansons",
-                "description": "Retrieve a list of all songs",
+                "summary": "Get all chansons with pagination and filters",
+                "description": "Retrieve a paginated list of songs. Supports filters by title and artist name.",
                 "operationId": "7188cf1966e57bfbfa559eb745dea39b",
+                "parameters": [
+                    {
+                        "name": "titre",
+                        "in": "query",
+                        "description": "Filter by song title",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Song "
+                        }
+                    },
+                    {
+                        "name": "artist_name",
+                        "in": "query",
+                        "description": "Filter by artist name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "DRAGANOV"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "List of songs",
+                        "description": "Paginated list of songs",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "titre": {
-                                                "type": "string",
-                                                "example": "Song 1"
-                                            },
-                                            "duree": {
-                                                "type": "number",
-                                                "format": "float",
-                                                "example": 3.5
-                                            },
-                                            "album_id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "created_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "updated_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            }
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
                                         },
-                                        "type": "object"
-                                    }
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 15
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titre": {
+                                                        "type": "string",
+                                                        "example": "Song 1"
+                                                    },
+                                                    "duree": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 3.5
+                                                    },
+                                                    "album_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "album": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "titre": {
+                                                                "type": "string",
+                                                                "example": "Album 1"
+                                                            },
+                                                            "artist_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1536,7 +1702,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "Ma Chanson"
+                            "example": "song"
                         }
                     }
                 ],

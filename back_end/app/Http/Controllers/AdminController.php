@@ -7,37 +7,83 @@ use App\Models\Artist;
 
 class AdminController extends Controller
 {
-    // show all artists 
-    /**
-     * @OA\Get(
-     *     path="/show-artists",
-     *     tags={"Artists"},
-     *     summary="Get all artists",
-     *     description="Retrieve a list of all artists",
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of artists",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="Cheb Khaled"),
-     *                 @OA\Property(property="genre", type="string", example="Raï"),
-     *                 @OA\Property(property="pays", type="string", example="Algérie"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time")
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function getArtists()
-    {
-        $artists = Artist::all();
-        return response()->json($artists);
+   /**
+ * @OA\Get(
+ *     path="/show-artists",
+ *     tags={"Artists"},
+ *     summary="Get all artists with pagination and filters",
+ *     description="Retrieve a paginated list of artists. Supports filters by genre and country.",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="query",
+ *         description="Page number",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\Parameter(
+ *         name="per_page",
+ *         in="query",
+ *         description="Number of items per page",
+ *         required=false,
+ *         @OA\Schema(type="integer", example=10)
+ *     ),
+ *     @OA\Parameter(
+ *         name="genre",
+ *         in="query",
+ *         description="Filter by genre",
+ *         required=false,
+ *         @OA\Schema(type="string", example="Raï")
+ *     ),
+ *     @OA\Parameter(
+ *         name="pays",
+ *         in="query",
+ *         description="Filter by country",
+ *         required=false,
+ *         @OA\Schema(type="string", example="Algérie")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Paginated list of artists",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="current_page", type="integer", example=1),
+ *             @OA\Property(property="per_page", type="integer", example=10),
+ *             @OA\Property(property="last_page", type="integer", example=5),
+ *             @OA\Property(property="total", type="integer", example=50),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="name", type="string", example="Cheb Khaled"),
+ *                     @OA\Property(property="genre", type="string", example="Raï"),
+ *                     @OA\Property(property="pays", type="string", example="Algérie"),
+ *                     @OA\Property(property="created_at", type="string", format="date-time"),
+ *                     @OA\Property(property="updated_at", type="string", format="date-time")
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )
+ */
+public function getArtists(Request $request) {
+    $perPage = $request->input('per_page', 10);
+
+    $query = Artist::query();
+
+    if ($request->has('genre')) {
+        $query->where('genre', 'like', '%' . $request->input('genre') . '%');
     }
 
+    if ($request->has('pays')) {
+        $query->where('pays','like','%'. $request->input('pays').'%');
+    }
+
+    $artists = $query->paginate($perPage);
+
+    return response()->json($artists);
+}
 
     // create artist
     /**

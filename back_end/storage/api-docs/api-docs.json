@@ -17,45 +17,108 @@
                 "tags": [
                     "Artists"
                 ],
-                "summary": "Get all artists",
-                "description": "Retrieve a list of all artists",
+                "summary": "Get all artists with pagination and filters",
+                "description": "Retrieve a paginated list of artists. Supports filters by genre and country.",
                 "operationId": "92bc42919bd3bf67dadcb3b8b37b3a0e",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "genre",
+                        "in": "query",
+                        "description": "Filter by genre",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Raï"
+                        }
+                    },
+                    {
+                        "name": "pays",
+                        "in": "query",
+                        "description": "Filter by country",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Algérie"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "List of artists",
+                        "description": "Paginated list of artists",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "example": "Cheb Khaled"
-                                            },
-                                            "genre": {
-                                                "type": "string",
-                                                "example": "Raï"
-                                            },
-                                            "pays": {
-                                                "type": "string",
-                                                "example": "Algérie"
-                                            },
-                                            "created_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "updated_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            }
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
                                         },
-                                        "type": "object"
-                                    }
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 50
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Cheb Khaled"
+                                                    },
+                                                    "genre": {
+                                                        "type": "string",
+                                                        "example": "Raï"
+                                                    },
+                                                    "pays": {
+                                                        "type": "string",
+                                                        "example": "Algérie"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }

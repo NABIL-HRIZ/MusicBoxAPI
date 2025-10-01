@@ -58,8 +58,9 @@ Route::middleware(['auth:sanctum','role:admin'])->group(function () {
 
 
 
+Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}/albums', [AdminController::class, 'getArtistsWithAlbums']);
+
 Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}/albums-chansons', [AdminController::class, 'getArtistWithAlbumsAndChansons']);
-Route::middleware(['auth:sanctum','role:admin'])->get('/artists/{id}/albums', [AdminController::class, 'getArtistWithAlbums']);
 
 
 Route::middleware(['auth:sanctum','role:admin'])->group(function() {
